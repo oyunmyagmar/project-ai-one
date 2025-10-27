@@ -18,7 +18,6 @@ export async function POST(req: NextRequest) {
       model: "black-forest-labs/FLUX.1-dev",
       inputs: prompt,
     })) as unknown as Blob;
-    console.log(image);
 
     const buffer = await image.arrayBuffer();
     const base64 = Buffer.from(buffer).toString("base64");

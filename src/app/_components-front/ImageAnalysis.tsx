@@ -1,10 +1,11 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
-import { TabsContent } from "@/components/ui";
+import { Button, TabsContent } from "@/components/ui";
+import { RxReload } from "react-icons/rx";
 
 export const ImageAnalysis = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [prompt, setPrompt] = useState<File>();
+  const [prompt, setPrompt] = useState<File | undefined>();
   const [imgPreview, setImgPreview] = useState<string>("");
   const [summaryText, setSummaryText] = useState<string>("");
 
@@ -24,7 +25,7 @@ export const ImageAnalysis = () => {
       const newForm = new FormData();
       prompt && newForm.append("prompt", prompt);
 
-      const response = await fetch("api/generate-summary", {
+      const response = await fetch("/api/generate-image-text", {
         method: "POST",
         body: newForm,
       });
@@ -44,48 +45,63 @@ export const ImageAnalysis = () => {
     }
   };
 
+  const refreshForm = () => {
+    setPrompt(undefined);
+    setImgPreview("");
+    setSummaryText("");
+  };
+
   return (
-    <TabsContent value="Image analysis">
+    <TabsContent value="Image analysis" className="w-145">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <div className="text-xl leading-7 font-semibold text-foreground">
-            Image analysis
+          <div className="flex justify-between">
+            <div className="text-xl leading-7 font-semibold text-foreground">
+              Image analysis
+            </div>
+            <Button
+              onClick={refreshForm}
+              type="button"
+              variant={"outline"}
+              className="w-12 h-10"
+            >
+              <RxReload size={16} />
+            </Button>
           </div>
+
           <div className="text-sm leading-5 text-muted-foreground">
             Upload a photo, and AI will detect elements.
           </div>
 
-          <div className="w-full flex flex-col gap-2">
+          {imgPreview ? (
+            <img
+              src={imgPreview}
+              className="w-auto h-100 rounded-md object-cover"
+              alt="image"
+            />
+          ) : (
             <input
               type="file"
               onChange={fileChangeHandler}
               className="w-full px-3 py-2 border border-input rounded-md text-sm leading-5"
             />
-            <div className="w-full h-100 rounded-xl overflow-hidden">
-              {imgPreview ? (
-                <img src={imgPreview} className="w-full h-auto" alt="image" />
-              ) : (
-                <div className="w-full h-full bg-gray-50 flex justify-center items-center text-sm leading-5 font-medium text-muted-foreground">
-                  Image Preview
-                </div>
-              )}
-            </div>
+          )}
 
-            <button
-              onClick={generateSummary}
-              type="button"
-              disabled={loading || !prompt}
-              className="w-full bg-primary text-primary-foreground py-2 rounded-md text-sm leading-5 font-medium"
-            >
-              {loading ? "Generating ..." : "Generate"}
-            </button>
-          </div>
+          <Button
+            onClick={generateSummary}
+            type="button"
+            disabled={loading || !prompt}
+            className="w-full"
+          >
+            {loading ? "Generating ..." : "Generate"}
+          </Button>
         </div>
 
         <div className="flex flex-col gap-2">
           <div className="text-xl leading-7 font-semibold text-foreground">
             Here is the summary
           </div>
+
           {summaryText ? (
             <div>{summaryText}</div>
           ) : (

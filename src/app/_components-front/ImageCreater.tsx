@@ -1,11 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { TabsContent } from "@/components/ui";
+import { Button, TabsContent } from "@/components/ui";
+import { RxReload } from "react-icons/rx";
 
 export const ImageCreater = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
   const [prompt, setPrompt] = useState<string>("");
+  const [image, setImage] = useState<string>("");
 
   const generateImage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -13,13 +14,14 @@ export const ImageCreater = () => {
     setImage("");
 
     try {
-      const response = await fetch("api/generate-image", {
+      const response = await fetch("/api/generate-text-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
+
       if (data.image) {
         setImage(data.image);
       } else {
@@ -33,13 +35,29 @@ export const ImageCreater = () => {
     }
   };
 
+  const refreshForm = () => {
+    setPrompt("");
+    setImage("");
+  };
+
   return (
-    <TabsContent value="Image creater">
+    <TabsContent value="Image creater" className="w-145">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <div className="text-xl leading-7 font-semibold text-foreground">
-            Image creator
+          <div className="flex justify-between">
+            <div className="text-xl leading-7 font-semibold text-foreground">
+              Image creator
+            </div>
+            <Button
+              onClick={refreshForm}
+              type="button"
+              variant={"outline"}
+              className="w-12 h-10"
+            >
+              <RxReload size={16} />
+            </Button>
           </div>
+
           <div className="text-sm leading-5 text-muted-foreground">
             What image do you want? Describe it briefly.
           </div>
@@ -53,13 +71,13 @@ export const ImageCreater = () => {
               className="w-full px-3 py-2 border border-input rounded-md text-sm leading-5 text-primary"
             />
 
-            <button
+            <Button
               type="submit"
               disabled={loading || !prompt}
-              className="w-full bg-primary text-primary-foreground py-2 rounded-md text-sm leading-5 font-medium"
+              className="w-full"
             >
               {loading ? "Generating ..." : "Generate Image"}
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -69,13 +87,11 @@ export const ImageCreater = () => {
           </div>
 
           {image ? (
-            <div>
-              <img
-                src={image}
-                alt="Genereated Image"
-                className="w-full rounded-xl"
-              />
-            </div>
+            <img
+              src={image}
+              alt="Genereated Image"
+              className="w-full rounded-xl"
+            />
           ) : (
             <div className="text-sm leading-6 text-muted-foreground">
               First, enter your text to generate an image.

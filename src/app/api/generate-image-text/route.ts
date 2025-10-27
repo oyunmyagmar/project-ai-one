@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
           content: [
             {
               type: "text",
-              text: "describe briefly the main thing of the image in no more than 10 words without any explanation.",
+              text: "name ingredients in given photo without any explanation.",
             },
             { type: "image_url", image_url: { url: imageUrl } },
           ],
@@ -38,14 +38,14 @@ export async function POST(req: NextRequest) {
       ],
     });
 
-    const generatedSummary = response.choices[0]?.message?.content || "";
-    console.log(generatedSummary, "generatedSummary");
+    const generatedText = response.choices[0]?.message?.content || "";
+    // console.log(generatedText, "generatedText");
 
-    return NextResponse.json({ text: generatedSummary.trim() });
+    return NextResponse.json({ text: generatedText.trim() });
   } catch (error) {
     console.error("Error generating text:", error);
     return NextResponse.json(
-      { error: "Failed to generate summary" },
+      { error: "Failed to generate text" },
       { status: 500 }
     );
   }
