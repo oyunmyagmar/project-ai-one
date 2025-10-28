@@ -4,29 +4,35 @@ import {
   ImageCreater,
   ImageAnalysis,
   IngredientRecognition,
+  GeminiChat,
+  // Video,
 } from "@/app/_components-front";
 
 const HomePage = () => {
   return (
-    <div className="w-screen h-screen flex flex-col items-center m-auto">
-      <div className="w-145 mt-6">
-        <Tabs defaultValue="Image analysis" className="w-105 gap-6">
-          <TabsList className="w-full p-1">
-            <TabsTrigger value="Image analysis">Image analysis</TabsTrigger>
-            <TabsTrigger value="Ingredient recognition">
-              Ingredient recognition
-            </TabsTrigger>
-            <TabsTrigger value="Image creater">Image creater</TabsTrigger>
-          </TabsList>
+    <div className="w-screen h-screen flex flex-col items-center m-auto justify-between">
+      <div className="w-360 h-screen px-[430px] relative">
+        <div className="w-145 mt-6">
+          <Tabs defaultValue="Image analysis" className="w-105 gap-6">
+            <TabsList className="w-full p-1">
+              <TabsTrigger value="Image analysis">Image analysis</TabsTrigger>
+              <TabsTrigger value="Ingredient recognition">
+                Ingredient recognition
+              </TabsTrigger>
+              <TabsTrigger value="Image creater">Image creater</TabsTrigger>
+              <TabsTrigger value="Video">Video</TabsTrigger>
+            </TabsList>
 
-          <div>
-            <ImageAnalysis />
+            <div>
+              <ImageAnalysis />
+              <IngredientRecognition />
+              <ImageCreater />
+              {/* <Video /> */}
+            </div>
+          </Tabs>
+        </div>
 
-            <IngredientRecognition />
-
-            <ImageCreater />
-          </div>
-        </Tabs>
+        <GeminiChat />
       </div>
     </div>
   );
