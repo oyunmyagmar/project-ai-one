@@ -4,9 +4,10 @@ import {
   ImageCreater,
   ImageAnalysis,
   IngredientRecognition,
-  GeminiChat,
+  GeminiTextGen,
   // Video,
 } from "@/app/_components-front";
+import { GeminiChat } from "./_components-front/GeminiChat";
 
 const HomePage = () => {
   return (
@@ -27,12 +28,12 @@ const HomePage = () => {
               <ImageAnalysis />
               <IngredientRecognition />
               <ImageCreater />
-              {/* <Video /> */}
             </div>
           </Tabs>
+          <GeminiChat />
         </div>
 
-        <GeminiChat />
+        <GeminiTextGen />
       </div>
     </div>
   );
