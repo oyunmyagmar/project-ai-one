@@ -7,7 +7,7 @@ import {
   GeminiTextGen,
   // Video,
 } from "@/app/_components-front";
-import { GeminiChat } from "./_components-front/GeminiChat";
+import { GeminiChatDB } from "@/app/_components-front";
 
 const HomePage = () => {
   return (
@@ -30,10 +30,11 @@ const HomePage = () => {
               <ImageCreater />
             </div>
           </Tabs>
-          <GeminiChat />
         </div>
-
-        <GeminiTextGen />
+        <div className="flex flex-col gap-3">
+          <GeminiChatDB />
+          <GeminiTextGen />
+        </div>
       </div>
     </div>
   );

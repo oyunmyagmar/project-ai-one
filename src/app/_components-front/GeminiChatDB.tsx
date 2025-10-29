@@ -1,27 +1,27 @@
 "use client";
-import React, { useState } from "react";
 import { Button, Textarea } from "@/components/ui";
+import React, { useState } from "react";
 import { LuSend, LuMessageCircle } from "react-icons/lu";
 
-export const GeminiTextGen = () => {
-  const [prompt, setPrompt] = useState<string>("");
-  const [data, setData] = useState<string>("");
+export const GeminiChatDB = () => {
+  const [userPrompt, setUserPrompt] = useState<string>("");
+  const [result, setResult] = useState<string>("");
   const [toggle, setToggle] = useState<boolean>(false);
 
   const generateChat = async () => {
-    const response = await fetch("/api/gemini-text-gen", {
+    const res = await fetch("/api/gemini-chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ userPrompt }),
     });
 
-    const result = await response.json();
-    // console.log(result);
-    if (result.text) {
-      setData(result.text);
-    } else {
-      alert("Failed to generate data");
+    const resData = await res.json();
+    console.log(resData.text);
+
+    if (resData.text) {
+      setResult(resData.text);
     }
+    setUserPrompt("");
   };
 
   const handleChatToggler = () => {
@@ -29,10 +29,12 @@ export const GeminiTextGen = () => {
   };
 
   return (
-    <div className="absolute bottom-9 right-9 bg-background">
+    <div className="absolute bottom-25 right-9 bg-background">
       <Button
         onClick={handleChatToggler}
-        className={`w-12 h-12 rounded-full ${toggle && "hidden"}`}
+        className={`w-12 h-12 rounded-full bg-blue-700 hover:bg-blue-700/80 ${
+          toggle && "hidden"
+        }`}
       >
         <LuMessageCircle size={16} />
       </Button>
@@ -50,13 +52,14 @@ export const GeminiTextGen = () => {
           </div>
 
           <div className="w-full px-6 py-4 min-h-88 overflow-scroll border border-border">
-            {data && data}
+            {result && result}
           </div>
 
           <div className="w-full flex gap-2 py-2 px-4">
             <Textarea
-              onChange={(e) => setPrompt(e.target.value)}
-              value={prompt}
+              onChange={(e) => setUserPrompt(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && generateChat()}
+              value={userPrompt}
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />

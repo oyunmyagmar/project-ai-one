@@ -1,38 +1,30 @@
-import { Button, Textarea } from "@/components/ui";
-import React, { useState } from "react";
+import React from "react";
 
 export const GeminiChat = () => {
-  const [userPrompt, setUserPrompt] = useState<string>("");
-  const [result, setResult] = useState<string>("");
-
-  const generateChat = async () => {
-    const res = await fetch("/api/gemini-chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userPrompt }),
-    });
-
-    const resData = await res.json();
-    console.log(resData.text);
-
-    if (resData.text) {
-      setResult(resData.text);
-    }
-    setUserPrompt("");
-  };
-
   return (
-    <div className="w-full mt-50">
-      <div>
-        <div className="h-50 border rounded-md">{result && result}</div>
-        <Textarea
-          onChange={(e) => setUserPrompt(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && generateChat()}
-          value={userPrompt}
-          className="h-10"
-        />
+    <div>
+      <div className="w-95 h-118 flex flex-col justify-end items-end border border-input rounded-lg">
+        <div className="w-full flex gap-2 px-4 py-2 items-center">
+          <div className="w-full">Chat assistant</div>
+          <Button variant={"outline"} className="w-8 h-8">
+            X
+          </Button>
+        </div>
+
+        <div className="w-full px-6 py-4 min-h-88 overflow-scroll border border-border">
+          {result && result}
+        </div>
+
+        <div className="w-full flex gap-2 py-2 px-4">
+          <Textarea
+            className="min-h-10 rounded-lg text-sm leading-5 "
+            placeholder="Type your message..."
+          />
+          <Button className="w-10 h-10 rounded-full">
+            <LuSend size={16} />
+          </Button>
+        </div>
       </div>
-      <Button onClick={generateChat}>Send</Button>
     </div>
   );
 };
