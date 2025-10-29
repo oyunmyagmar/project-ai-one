@@ -63,7 +63,10 @@ export const GeminiChatDB = () => {
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />
-            <Button onClick={generateChat} className="w-10 h-10 rounded-full">
+            <Button
+              onClick={generateChat}
+              className="w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-700/80"
+            >
               <LuSend size={16} />
             </Button>
           </div>

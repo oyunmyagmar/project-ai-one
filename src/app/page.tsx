@@ -5,6 +5,7 @@ import {
   ImageAnalysis,
   IngredientRecognition,
   GeminiTextGen,
+  GeminiChat,
   // Video,
 } from "@/app/_components-front";
 import { GeminiChatDB } from "@/app/_components-front";
@@ -32,6 +33,7 @@ const HomePage = () => {
           </Tabs>
         </div>
         <div className="flex flex-col gap-3">
+          <GeminiChat />
           <GeminiChatDB />
           <GeminiTextGen />
         </div>
