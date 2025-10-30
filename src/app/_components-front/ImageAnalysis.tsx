@@ -31,7 +31,7 @@ export const ImageAnalysis = () => {
       });
 
       const data = await response.json();
-
+      console.log(data.text);
       if (data.text) {
         setSummaryText(data.text);
       } else {
