@@ -9,7 +9,7 @@ export const GeminiChatDB = () => {
   const [toggle, setToggle] = useState<boolean>(false);
 
   const generateChat = async () => {
-    const res = await fetch("/api/gemini-chat", {
+    const res = await fetch("/api/gemini-chat-db", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userPrompt }),

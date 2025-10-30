@@ -6,8 +6,8 @@ export type ChatHistorySchemaType = {
 };
 
 export const ChatHistorySchema = new Schema({
-  role: { type: String, enum: ["user", "model"] },
-  parts: [{ text: String }],
+  role: { type: String, enum: ["user", "model"], required: true },
+  parts: [{ text: { type: String, required: true } }],
 });
 
 export const ChatHistory =

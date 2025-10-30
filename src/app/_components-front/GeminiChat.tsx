@@ -1,21 +1,53 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Textarea } from "@/components/ui";
 import { LuSend, LuMessageCircle } from "react-icons/lu";
+import Markdown from "react-markdown";
 
 export const GeminiChat = () => {
   const [toggle, setToggle] = useState<boolean>(false);
   const [result, setResult] = useState<string>("");
   const [prompt, setPrompt] = useState("");
+  const [promptData, setPromptData] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
   // const [promptData, setPromptData] = useState({});
 
-  let promptData = [];
-
-  const handlePromptData = (prompt: string) => {
-    promptData.push(...prompt);
-    console.log(promptData, "DATAPROMPt");
-    // setPrompt();
+  const handleChangePrompt = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setPrompt(e.target.value);
+    // console.log(prompt, "PROMPT");
   };
+
+  const handlePromptData = async (prompt: string) => {
+    if (prompt == "") {
+      return alert("Please enter your message");
+    }
+
+    // promptData =
+
+    const newPrompData = [...promptData, prompt];
+
+    setPromptData(newPrompData);
+    setPrompt("");
+
+    const generateChat = async () => {
+      setLoading(true);
+      const res = await fetch("/api/gemini-chat", {
+        method: "POST",
+        headers: { "Content-Type": "apllication/json" },
+        body: JSON.stringify({ promptData: newPrompData }),
+      });
+
+      const resResult = await res.json();
+      if (resResult.text) {
+        setResult(resResult.text);
+      } else {
+        alert("Failed to generate data");
+      }
+      setLoading(false);
+    };
+    generateChat();
+  };
+
   return (
     <div className="absolute bottom-41 right-9 bg-background">
       <Button
@@ -40,12 +72,13 @@ export const GeminiChat = () => {
           </div>
 
           <div className="w-full px-6 py-4 min-h-88 overflow-scroll border border-border">
-            {/* {result && result} */}
+            <Markdown>{result && result}</Markdown>
           </div>
 
           <div className="w-full flex gap-2 py-2 px-4">
             <Textarea
-              onChange={(e) => setPrompt(e.target.value)}
+              onChange={handleChangePrompt}
+              onKeyDown={(e) => e.key === "Enter" && handlePromptData(prompt)}
               value={prompt}
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
