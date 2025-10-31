@@ -2,6 +2,7 @@
 import React, { ChangeEvent, useState } from "react";
 import { Button, TabsContent } from "@/components/ui";
 import { RxReload } from "react-icons/rx";
+import Markdown from "react-markdown";
 
 export const ImageAnalysis = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,7 +32,7 @@ export const ImageAnalysis = () => {
       });
 
       const data = await response.json();
-      console.log(data.text);
+      // console.log(data.text);
       if (data.text) {
         setSummaryText(data.text);
       } else {

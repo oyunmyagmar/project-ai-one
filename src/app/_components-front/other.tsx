@@ -14,14 +14,17 @@ export const GeminiChat = () => {
   const [result, setResult] = useState("");
   const [resultData, setResultData] = useState<string[]>([]);
 
-  const senderData = [{ sender: "user", prompt: prompt, date: new Date() }];
+  const chats = [
+    { role: "user", prompt: promptData },
+    { role: "model", result: resultData },
+  ];
 
-  // useEffect(() => {
-  //   const newResultData = [...resultData, result];
-  //   setResultData(newResultData);
-  // }, [result]);
+  useEffect(() => {
+    const newResultData = [...resultData, result];
+    setResultData(newResultData);
+  }, [result]);
 
-  // console.log(resultData, "resultData");
+  console.log(resultData, "resultData");
 
   const handleChangePrompt = (e: ChangeEvent<HTMLInputElement>) => {
     setPrompt(e.target.value);
@@ -33,16 +36,16 @@ export const GeminiChat = () => {
       return alert("Please enter your message");
     }
 
-    // const newPrompData = [...promptData, prompt];
+    const newPrompData = [...promptData, prompt];
 
-    // setPromptData(newPrompData);
+    setPromptData(newPrompData);
 
     const generateChat = async () => {
       setLoading(true);
       const res = await fetch("/api/gemini-chat", {
         method: "POST",
         headers: { "Content-Type": "apllication/json" },
-        body: JSON.stringify({ senderData }),
+        body: JSON.stringify({ promptData: newPrompData, sender, date }),
       });
 
       const resResult = await res.json();
@@ -50,10 +53,10 @@ export const GeminiChat = () => {
       if (resResult.text) {
         setResult(resResult.text);
         setPrompt("");
-        setLoading(false);
       } else {
         alert("Failed to generate data");
       }
+      setLoading(false);
     };
     generateChat();
   };
@@ -82,12 +85,12 @@ export const GeminiChat = () => {
           </div>
 
           <div className="w-full px-6 py-4 min-h-88 overflow-scroll border border-border flex flex-col">
-            {/* {chats.map((el) => (
+            {chats.map((el) => (
               <div>
                 <div className="flex justify-end">{el.prompt}</div>
                 <div>{el.result}</div>
               </div>
-            ))} */}
+            ))}
             {/* <div className="flex justify-end">{prompt}</div> */}
             {/* <div>
               <Markdown>{result && result}</Markdown>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Button, TabsContent } from "@/components/ui";
+import { Button, TabsContent, Textarea } from "@/components/ui";
 import { RxReload } from "react-icons/rx";
 
 export const IngredientRecognition = () => {
@@ -23,7 +23,8 @@ export const IngredientRecognition = () => {
       });
 
       const data = await response.json();
-      console.log(data, "TEXT");
+
+      // console.log(data, "TEXT");
       if (data.text) {
         setIngredient(data.text);
       } else {
@@ -69,8 +70,7 @@ export const IngredientRecognition = () => {
               onSubmit={generateTextToText}
               className="w-full flex flex-col gap-2"
             >
-              <input
-                type="text"
+              <Textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Enter your prompt..."

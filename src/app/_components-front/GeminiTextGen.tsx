@@ -1,14 +1,26 @@
 "use client";
-import React, { useState } from "react";
-import { Button, Textarea } from "@/components/ui";
+import React, { ChangeEvent, useState } from "react";
+import { Button, Input } from "@/components/ui";
 import { LuSend, LuMessageCircle } from "react-icons/lu";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export const GeminiTextGen = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [data, setData] = useState<string>("");
   const [toggle, setToggle] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const handleChatToggler = () => {
+    setToggle(true);
+  };
+
+  const handlePrompt = (e: ChangeEvent<HTMLInputElement>) => {
+    setPrompt(e.target.value);
+    setData("");
+  };
 
   const generateChat = async () => {
+    setLoading(true);
     const response = await fetch("/api/gemini-text-gen", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -19,13 +31,11 @@ export const GeminiTextGen = () => {
     // console.log(result);
     if (result.text) {
       setData(result.text);
+      setPrompt("");
     } else {
       alert("Failed to generate data");
     }
-  };
-
-  const handleChatToggler = () => {
-    setToggle(true);
+    setLoading(false);
   };
 
   return (
@@ -54,14 +64,23 @@ export const GeminiTextGen = () => {
           </div>
 
           <div className="w-full flex gap-2 py-2 px-4">
-            <Textarea
-              onChange={(e) => setPrompt(e.target.value)}
+            <Input
+              onChange={handlePrompt}
+              onKeyDown={(e) => e.key === "Enter" && generateChat()}
               value={prompt}
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />
-            <Button onClick={generateChat} className="w-10 h-10 rounded-full">
-              <LuSend size={16} />
+            <Button
+              onClick={generateChat}
+              className={`w-10 h-10 rounded-full`}
+              disabled={loading}
+            >
+              <LuSend size={16} className={`${loading && "hidden"}`} />
+              <AiOutlineLoading3Quarters
+                size={16}
+                className={`${!loading && "hidden"} animate-spin`}
+              />
             </Button>
           </div>
         </div>
