@@ -13,3 +13,4 @@ export const ChatHistorySchema = new Schema({
 export const ChatHistory =
   mongoose.models.ChatHistory ||
   mongoose.model("ChatHistory", ChatHistorySchema);
+// tusdaa session - toi bh, session id-tai bh, tgd session -eeree yalgagdaj chatlah
