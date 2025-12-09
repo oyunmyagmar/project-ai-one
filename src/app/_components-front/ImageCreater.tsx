@@ -1,7 +1,9 @@
 "use client";
+
 import React, { useState } from "react";
-import { Button, TabsContent } from "@/components/ui";
+import { Button, TabsContent, Textarea } from "@/components/ui";
 import { RxReload } from "react-icons/rx";
+import { Image, Sparkle } from "lucide-react";
 
 export const ImageCreater = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -22,11 +24,11 @@ export const ImageCreater = () => {
 
       const data = await response.json();
 
-      if (data.image) {
-        setImage(data.image);
-      } else {
+      if (!data.image) {
         alert("Failed to generate image");
       }
+
+      setImage(data.image);
     } catch (error) {
       console.error("Error", error);
       alert("Failed to generate image");
@@ -41,12 +43,12 @@ export const ImageCreater = () => {
   };
 
   return (
-    <TabsContent value="Image creater" className="w-145">
+    <TabsContent value="Image creater" className="w-full">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
-            <div className="text-xl leading-7 font-semibold text-foreground">
-              Image creator
+            <div className="flex gap-1 text-xl leading-7 font-semibold text-foreground">
+              <Sparkle /> Image creator
             </div>
             <Button
               onClick={refreshForm}
@@ -63,12 +65,11 @@ export const ImageCreater = () => {
           </div>
 
           <form onSubmit={generateImage} className="w-full flex flex-col gap-2">
-            <input
-              type="text"
+            <Textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Enter your prompt..."
-              className="w-full px-3 py-2 border border-input rounded-md text-sm leading-5 text-primary"
+              className="w-full h-32 px-3 py-2 border border-black/60 rounded-md text-sm leading-5 text-primary"
             />
 
             <Button
@@ -82,16 +83,18 @@ export const ImageCreater = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="text-xl leading-7 font-semibold text-foreground">
-            Result
+          <div className="flex gap-1 text-xl leading-7 font-semibold text-foreground">
+            <Image /> Result
           </div>
 
           {image ? (
-            <img
-              src={image}
-              alt="Genereated Image"
-              className="w-full rounded-xl"
-            />
+            <div className="border border-black/55 rounded-sm p-3">
+              <img
+                src={image}
+                alt="Genereated Image"
+                className="w-full rounded-xl"
+              />
+            </div>
           ) : (
             <div className="text-sm leading-6 text-muted-foreground">
               First, enter your text to generate an image.

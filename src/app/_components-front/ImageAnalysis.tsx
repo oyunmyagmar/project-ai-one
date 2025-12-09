@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { Button, TabsContent } from "@/components/ui";
 import { RxReload } from "react-icons/rx";
 import Markdown from "react-markdown";
+import { NotepadText, Sparkle } from "lucide-react";
 
 export const ImageAnalysis = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -32,12 +33,16 @@ export const ImageAnalysis = () => {
       });
 
       const data = await response.json();
-      // console.log(data.text);
-      if (data.text) {
-        setSummaryText(data.text);
-      } else {
-        alert("Failed to generate summary");
+
+      if (!data.text) {
+        alert("Failed to generate summary!");
       }
+
+      const cleaned = data.text
+        .replace("<|begin_of_box|>")
+        .replace("<|end_of_box|>");
+
+      setSummaryText(cleaned);
     } catch (error) {
       console.error("Error", error);
       alert("Failed to generate summary");
@@ -53,12 +58,12 @@ export const ImageAnalysis = () => {
   };
 
   return (
-    <TabsContent value="Image analysis" className="w-145">
+    <TabsContent value="Image analysis" className="w-full">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
-            <div className="text-xl leading-7 font-semibold text-foreground">
-              Image analysis
+            <div className="flex gap-1 text-xl leading-7 font-semibold text-foreground">
+              <Sparkle /> Image analysis
             </div>
             <Button
               onClick={refreshForm}
@@ -71,20 +76,20 @@ export const ImageAnalysis = () => {
           </div>
 
           <div className="text-sm leading-5 text-muted-foreground">
-            Upload a photo, and AI will detect elements.
+            Upload a photo, and AI will detect the elements.
           </div>
 
           {imgPreview ? (
             <img
               src={imgPreview}
               className="w-auto h-100 rounded-md object-cover"
-              alt="image"
+              alt="imgage preview"
             />
           ) : (
             <input
               type="file"
               onChange={fileChangeHandler}
-              className="w-full px-3 py-2 border border-input rounded-md text-sm leading-5"
+              className="w-full px-3 py-2 border border-black/60 rounded-md text-sm leading-5"
             />
           )}
 
@@ -99,15 +104,20 @@ export const ImageAnalysis = () => {
         </div>
 
         <div className="flex flex-col gap-2">
-          <div className="text-xl leading-7 font-semibold text-foreground">
-            Here is the summary
+          <div className="flex gap-1 text-xl leading-7 font-semibold text-foreground">
+            <NotepadText /> Here is the summary
           </div>
 
           {summaryText ? (
-            <div>{summaryText}</div>
+            <div className="text-sm leading-6 text-foreground border border-black/55 rounded-sm px-3 py-2">
+              <p className="font-semibold">
+                Here's the breakdown of the elements visible in the image:
+              </p>
+              <Markdown>{summaryText}</Markdown>
+            </div>
           ) : (
             <div className="text-sm leading-6 text-muted-foreground">
-              First, enter your image to recognize elements.
+              First, enter your image to recognize the elements.
             </div>
           )}
         </div>

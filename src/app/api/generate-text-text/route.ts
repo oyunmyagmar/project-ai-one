@@ -1,4 +1,5 @@
 import { InferenceClient } from "@huggingface/inference";
+import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
 const hf = new InferenceClient(process.env.HF_TOKEN);
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await hf.chatCompletion({
-      model: "meta-llama/Llama-3.2-3B-Instruct",
+      model: "meta-llama/Llama-3.1-8B-Instruct",
       messages: [
         {
           role: "user",
@@ -26,8 +27,11 @@ Ingredients:`,
       ],
     });
 
+    if (!response) {
+      return NextResponse.json({ error: "Failed to generate text!" });
+    }
+
     const generatedText = response.choices[0]?.message?.content || "";
-    console.log({ generatedText });
 
     return NextResponse.json({ text: generatedText.trim() });
   } catch (error) {

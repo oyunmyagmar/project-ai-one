@@ -19,6 +19,10 @@ export async function POST(req: NextRequest) {
       inputs: prompt,
     })) as unknown as Blob;
 
+    if (!image) {
+      return NextResponse.json({ error: "Failed to generate image" });
+    }
+
     const buffer = await image.arrayBuffer();
     const base64 = Buffer.from(buffer).toString("base64");
 

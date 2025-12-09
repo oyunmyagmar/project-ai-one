@@ -34,7 +34,9 @@ async function connectDB() {
     };
 
     // @ts-ignore - Type issue with mongoose connection caching
-    cached!.promise = mongoose.connect(MONGODB_URI!, opts);
+    cached!.promise = mongoose.connect(MONGODB_URI!, opts, {
+      dbName: "ai-models",
+    });
   }
 
   try {

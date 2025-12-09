@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     if (!prompt) {
       return NextResponse.json(
-        { error: "Prompt is required" },
+        { error: "Prompt is required!" },
         { status: 400 }
       );
     }
@@ -22,15 +22,14 @@ export async function POST(req: NextRequest) {
     }
 
     const response = await hf.chatCompletion({
-      provider: "nebius",
-      model: "google/gemma-3-27b-it",
+      model: "zai-org/GLM-4.6V-Flash",
       messages: [
         {
           role: "user",
           content: [
             {
               type: "text",
-              text: "name ingredients in given photo without any explanation.",
+              text: "name elements in given photo without any further explanation.",
             },
             { type: "image_url", image_url: { url: imageUrl } },
           ],
@@ -38,8 +37,11 @@ export async function POST(req: NextRequest) {
       ],
     });
 
+    if (!response) {
+      return NextResponse.json({ error: "Failed to generate text!" });
+    }
+
     const generatedText = response.choices[0]?.message?.content || "";
-    // console.log(generatedText, "generatedText");
 
     return NextResponse.json({ text: generatedText.trim() });
   } catch (error) {

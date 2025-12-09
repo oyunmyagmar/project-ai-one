@@ -1,6 +1,6 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button, Input, Textarea } from "@/components/ui";
 import { LuSend, LuMessageCircle } from "react-icons/lu";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
@@ -14,7 +14,7 @@ export const GeminiTextGen = () => {
     setToggle(true);
   };
 
-  const handlePrompt = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePrompt = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
     setData("");
   };
@@ -27,14 +27,13 @@ export const GeminiTextGen = () => {
       body: JSON.stringify({ prompt }),
     });
 
-    const result = await response.json();
-    // console.log(result);
-    if (result.text) {
-      setData(result.text);
-      setPrompt("");
-    } else {
+    if (!response) {
       alert("Failed to generate data");
     }
+    const result = await response.json();
+
+    setData(result.text);
+    setPrompt("");
     setLoading(false);
   };
 
@@ -64,11 +63,11 @@ export const GeminiTextGen = () => {
           </div>
 
           <div className="w-full flex gap-2 py-2 px-4">
-            <Input
+            <Textarea
               onChange={handlePrompt}
               onKeyDown={(e) => e.key === "Enter" && generateChat()}
               value={prompt}
-              className="min-h-10 rounded-lg text-sm leading-5 "
+              className="min-h-14 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />
             <Button
