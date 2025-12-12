@@ -71,7 +71,7 @@ export const GeminiChat = () => {
       {toggle ? (
         <div className="w-95 h-118 flex flex-col justify-end items-end border border-input rounded-lg">
           <div className="w-full flex gap-2 px-4 py-2 items-center">
-            <div className="w-full">Chat assistant</div>
+            <div className="w-full">Chat ffffffassistant</div>
             <Button
               onClick={() => setToggle(false)}
               variant={"outline"}

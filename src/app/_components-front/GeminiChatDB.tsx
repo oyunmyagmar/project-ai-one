@@ -1,47 +1,90 @@
 "use client";
+
 import { Button, Textarea } from "@/components/ui";
-import React, { useState } from "react";
+import { HistoryType } from "@/lib/types";
+import React, { useEffect, useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { LuSend, LuMessageCircle } from "react-icons/lu";
+import { toast } from "sonner";
 
 export const GeminiChatDB = () => {
   const [userPrompt, setUserPrompt] = useState<string>("");
-  const [result, setResult] = useState<string>("");
+  const [conversations, setConversations] = useState<
+    { role: "user" | "model"; content: string }[]
+  >([]);
   const [toggle, setToggle] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getConversationHistory = async () => {
+      const res = await fetch("/api/gemini-chat-db/history");
+
+      if (!res) {
+        toast.error("No conversation found");
+      }
+      const data = await res.json();
+
+      if (data) {
+        const formatted = data.history.flatmap((history: HistoryType) => [
+          { role: "user", content: history.userPrompt },
+          { role: "model", content: history.modelResponse },
+        ]);
+        setConversations(formatted);
+      }
+    };
+    getConversationHistory();
+  }, []);
 
   const generateChat = async () => {
-    const res = await fetch("/api/gemini-chat-db", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userPrompt }),
-    });
+    try {
+      if (!userPrompt.trim()) {
+        toast.warning("userPrompt required!");
+      }
+      const newConvers = { role: "user" as const, content: userPrompt };
+      setConversations((prev) => [...prev, newConvers]);
+      setLoading(true);
 
-    const resData = await res.json();
-    console.log(resData.text);
+      const res = await fetch("/api/gemini-chat-db", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userPrompt }),
+      });
 
-    if (resData.text) {
-      setResult(resData.text);
+      if (!res.ok) {
+        toast.error("Not generated!");
+      }
+
+      const data = await res.json();
+
+      const modelConvers = {
+        role: "model" as const,
+        content: data.modelResponse || "",
+      };
+
+      setConversations((prev) => [...prev, modelConvers]);
+      setUserPrompt("");
+    } catch (error) {
+      console.error("Error", error);
+    } finally {
+      setLoading(false);
     }
-    setUserPrompt("");
-  };
-
-  const handleChatToggler = () => {
-    setToggle(true);
   };
 
   return (
     <div className="absolute bottom-25 right-9 bg-background">
       <Button
-        onClick={handleChatToggler}
+        onClick={() => setToggle(true)}
         className={`w-12 h-12 rounded-full bg-blue-700 hover:bg-blue-700/80 ${
           toggle && "hidden"
         }`}
       >
         <LuMessageCircle size={16} />
       </Button>
+
       {toggle ? (
         <div className="w-95 h-118 flex flex-col justify-end items-end border border-input rounded-lg">
           <div className="w-full flex gap-2 px-4 py-2 items-center">
-            <div className="w-full">Chat assistant</div>
+            <div className="w-full">AI Chat Assistant</div>
             <Button
               onClick={() => setToggle(false)}
               variant={"outline"}
@@ -51,23 +94,46 @@ export const GeminiChatDB = () => {
             </Button>
           </div>
 
-          <div className="w-full px-6 py-4 min-h-88 overflow-scroll border border-border">
-            {result && result}
+          <div className="w-full px-6 py-4 min-h-88 overflow-scroll flex flex-col gap-3">
+            {conversations.map((c, i) => (
+              <div
+                key={i}
+                className={`max-w-[80%] px-4 py-2 rounded-lg text-sm whitespace-pre-wrap ${
+                  c.role === "user"
+                    ? "bg-blue-600 text-white self-end"
+                    : "bg-gray-200 text-gray-800 self-start"
+                }`}
+              >
+                {c.content}
+              </div>
+            ))}
           </div>
 
-          <div className="w-full flex gap-2 py-2 px-4">
+          {loading && (
+            <div className="self-start text-gray-500 text-sm animate-pulse">
+              AI is typing...
+            </div>
+          )}
+
+          <div className="w-full flex gap-2 py-2 px-4 border border-border">
             <Textarea
               onChange={(e) => setUserPrompt(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && generateChat()}
+              onKeyDown={(e) => e.key === "Enter" && generateChat}
               value={userPrompt}
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />
+
             <Button
               onClick={generateChat}
+              disabled={loading}
               className="w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-700/80"
             >
-              <LuSend size={16} />
+              <LuSend size={16} className={`${loading && "hidden"}`} />
+              <AiOutlineLoading3Quarters
+                size={16}
+                className={`${!loading && "hidden"} animate-spin`}
+              />
             </Button>
           </div>
         </div>

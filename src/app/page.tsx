@@ -35,7 +35,7 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-3 px-100">
-          <GeminiChat />
+          {/* <GeminiChat /> */}
           <GeminiChatDB />
           <GeminiTextGen />
         </div>

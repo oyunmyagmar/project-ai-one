@@ -9,24 +9,15 @@ export const createChatHistory = async ({
   modelResponse: string;
 }) => {
   try {
-    console.log("USER PRO", userPrompt, modelResponse);
     await connectDB();
-    // const newChatHistory = new ChatHistory([
-    //   { role: "user", parts: [{ text: userPrompt }] },
-    //   { role: "model", parts: [{ text: modelResponse }] },
-    // ]);
-    // await newChatHistory.save();
 
-    const newChatHistory = await ChatHistory.create({
-      role: "user",
-      parts: [{ text: userPrompt }],
+    const ChatHistoryDB = await ChatHistory.create({
+      userPrompt,
+      modelResponse,
     });
-    const newModelHistory = await ChatHistory.create({
-      role: "model",
-      parts: [{ text: modelResponse }],
-    });
-    return [newChatHistory, newModelHistory];
+
+    return ChatHistoryDB;
   } catch (error) {
-    console.log("ERRORR!!!", error);
+    console.error("Error", error);
   }
 };

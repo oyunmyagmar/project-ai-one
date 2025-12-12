@@ -10,3 +10,8 @@ export type MovieResponseType = {
   total_pages: number;
   total_results: number;
 };
+
+export type HistoryType = {
+  userPrompt: string;
+  modelResponse: string;
+};

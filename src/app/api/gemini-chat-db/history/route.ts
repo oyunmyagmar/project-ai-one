@@ -1,0 +1,20 @@
+import { connectDB } from "@/lib/f";
+import { ChatHistory } from "@/lib/models/ChatHistory";
+import { NextResponse } from "next/server";
+
+export async function GET() {
+  try {
+    await connectDB();
+
+    const history = await ChatHistory.find().sort({ createdAt: 1 });
+
+    if (!history) {
+      return NextResponse.json({ error: "No history found!" });
+    }
+
+    return NextResponse.json({ data: history });
+  } catch (error) {
+    console.error("Error", error);
+    return NextResponse.json({ error: "Server error!" }, { status: 500 });
+  }
+}
