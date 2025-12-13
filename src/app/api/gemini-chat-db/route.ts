@@ -4,53 +4,58 @@ import { createChatHistory } from "@/lib/services/chat-history-service";
 import { GoogleGenAI } from "@google/genai";
 import { NextRequest, NextResponse } from "next/server";
 
-const ai = new GoogleGenAI({});
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 export async function POST(request: NextRequest) {
   try {
     const { userPrompt } = await request.json();
 
     if (!userPrompt.trim()) {
-      return NextResponse.json(
-        { error: "Prompt is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Prompt required" }, { status: 400 });
     }
 
     await connectDB();
 
-    const allChatHistory = await ChatHistory.find().sort({ createdAt: 1 });
+    const chatHistoryDB = await ChatHistory.find({
+      userPrompt: { $ne: "" },
+      modelResponse: { $ne: "" },
+    })
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .lean()
+      .then((h) => h.reverse());
 
-    const formattedHistory = allChatHistory.flatMap((history: any) => [
+    const history = chatHistoryDB.flatMap((history) => [
       {
         role: "user",
-        parts: [{ text: history.userPrompt || "" }],
+        parts: [{ text: history.userPrompt }],
       },
       {
         role: "model",
-        parts: [{ text: history.modelResponse || "" }],
+        parts: [{ text: history.modelResponse }],
       },
     ]);
 
     const chat = ai.chats.create({
-      model: "gemini-2.0-flash-lite",
-      history: formattedHistory,
+      model: "gemini-1.5-pro-latest",
+      history: history,
     });
 
     const response = await chat.sendMessage({
-      message: userPrompt,
+      message: userPrompt.trim(),
     });
 
     const modelResponse = response.text || "";
 
     await createChatHistory({
-      userPrompt: userPrompt,
+      userPrompt: userPrompt.trim(),
       modelResponse: modelResponse,
     });
 
-    return NextResponse.json({ data: modelResponse });
+    return NextResponse.json({ modelResponse });
   } catch (error) {
     console.error("Error", error);
+
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

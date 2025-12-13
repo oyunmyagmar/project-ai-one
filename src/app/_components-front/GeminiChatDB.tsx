@@ -36,18 +36,24 @@ export const GeminiChatDB = () => {
   }, []);
 
   const generateChat = async () => {
+    const trimmedPrompt = userPrompt.trim();
+
+    if (!trimmedPrompt.trim()) {
+      toast.warning("userPrompt required!");
+    }
+
     try {
-      if (!userPrompt.trim()) {
-        toast.warning("userPrompt required!");
-      }
-      const newConvers = { role: "user" as const, content: userPrompt };
-      setConversations((prev) => [...prev, newConvers]);
       setLoading(true);
+
+      setConversations((prev) => [
+        ...prev,
+        { role: "user", content: userPrompt },
+      ]);
 
       const res = await fetch("/api/gemini-chat-db", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userPrompt }),
+        body: JSON.stringify({ userPrompt: trimmedPrompt }),
       });
 
       if (!res.ok) {
@@ -56,12 +62,11 @@ export const GeminiChatDB = () => {
 
       const data = await res.json();
 
-      const modelConvers = {
-        role: "model" as const,
-        content: data.modelResponse || "",
-      };
+      setConversations((prev) => [
+        ...prev,
+        { role: "model", content: data.modelResponse },
+      ]);
 
-      setConversations((prev) => [...prev, modelConvers]);
       setUserPrompt("");
     } catch (error) {
       console.error("Error", error);
@@ -117,9 +122,13 @@ export const GeminiChatDB = () => {
 
           <div className="w-full flex gap-2 py-2 px-4 border border-border">
             <Textarea
-              onChange={(e) => setUserPrompt(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && generateChat}
               value={userPrompt}
+              onChange={(e) => setUserPrompt(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault(), generateChat();
+                }
+              }}
               className="min-h-10 rounded-lg text-sm leading-5 "
               placeholder="Type your message..."
             />
