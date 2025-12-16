@@ -7,7 +7,6 @@ import {
   IngredientRecognition,
   GeminiTextGen,
 } from "@/app/_components-front";
-import { GeminiChatDB } from "@/app/_components-front";
 
 const HomePage = () => {
   return (
@@ -17,11 +16,18 @@ const HomePage = () => {
           <div className="p-8 bg-white rounded-2xl">
             <Tabs defaultValue="Image analysis" className="w-full gap-6">
               <TabsList className="w-full p-1">
-                <TabsTrigger value="Image analysis">Image analysis</TabsTrigger>
-                <TabsTrigger value="Ingredient recognition">
+                <TabsTrigger value="Image analysis" className="cursor-pointer">
+                  Image analysis
+                </TabsTrigger>
+                <TabsTrigger
+                  value="Ingredient recognition"
+                  className="cursor-pointer"
+                >
                   Ingredient recognition
                 </TabsTrigger>
-                <TabsTrigger value="Image creater">Image creater</TabsTrigger>
+                <TabsTrigger value="Image creater" className="cursor-pointer">
+                  Image creater
+                </TabsTrigger>
               </TabsList>
 
               <div>
@@ -34,7 +40,6 @@ const HomePage = () => {
         </div>
 
         <div className="flex flex-col gap-3 px-100">
-          <GeminiChatDB />
           <GeminiTextGen />
         </div>
       </div>

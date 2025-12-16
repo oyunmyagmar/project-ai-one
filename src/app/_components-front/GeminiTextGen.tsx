@@ -44,7 +44,9 @@ export const GeminiTextGen = () => {
     <div className="absolute bottom-9 right-9 bg-background">
       <Button
         onClick={handleChatToggler}
-        className={`w-12 h-12 rounded-full ${toggle && "hidden"}`}
+        className={`w-12 h-12 rounded-full cursor-pointer ${
+          toggle && "hidden"
+        }`}
       >
         <LuMessageCircle size={16} />
       </Button>
@@ -80,7 +82,7 @@ export const GeminiTextGen = () => {
 
             <Button
               onClick={() => generateChat(prompt)}
-              className={`w-10 h-10 rounded-full`}
+              className={`w-10 h-10 rounded-full cursor-pointer`}
               disabled={loading}
             >
               <LuSend size={16} className={`${loading && "hidden"}`} />

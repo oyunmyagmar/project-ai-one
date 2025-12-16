@@ -70,7 +70,7 @@ export const ImageAnalysis = () => {
               onClick={refreshForm}
               type="button"
               variant={"outline"}
-              className="w-12 h-10"
+              className="w-12 h-10 cursor-pointer"
             >
               <RxReload size={16} />
             </Button>
@@ -98,7 +98,7 @@ export const ImageAnalysis = () => {
             onClick={generateSummary}
             type="button"
             disabled={loading || !prompt}
-            className="w-full"
+            className="w-full cursor-pointer"
           >
             {loading ? "Generating ..." : "Generate"}
           </Button>

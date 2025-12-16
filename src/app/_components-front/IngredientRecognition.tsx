@@ -57,7 +57,7 @@ export const IngredientRecognition = () => {
               onClick={refreshForm}
               type="button"
               variant={"outline"}
-              className="w-12 h-10"
+              className="w-12 h-10 cursor-pointer"
             >
               <RxReload size={16} />
             </Button>
