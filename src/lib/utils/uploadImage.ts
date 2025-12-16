@@ -2,14 +2,12 @@ import cloudinary from "../config/cloudinary";
 
 export const uploadImageToCloudinary = async (image: File): Promise<string> => {
   try {
-    // Convert File to base64
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64Image = `data:${image.type};base64,${buffer.toString(
       "base64"
     )}`;
 
-    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(base64Image, {
       folder: "food-images",
     });

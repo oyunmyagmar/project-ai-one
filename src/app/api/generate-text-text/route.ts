@@ -1,5 +1,4 @@
 import { InferenceClient } from "@huggingface/inference";
-import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
 const hf = new InferenceClient(process.env.HF_TOKEN);
