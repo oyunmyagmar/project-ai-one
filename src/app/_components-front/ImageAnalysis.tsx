@@ -112,7 +112,7 @@ export const ImageAnalysis = () => {
           {summaryText ? (
             <div className="text-sm leading-6 text-foreground border border-black/55 rounded-sm px-3 py-2">
               <p className="font-semibold">
-                Here's the breakdown of the elements visible in the image:
+                Here is the breakdown of the elements visible in the image:
               </p>
               <Markdown>{summaryText}</Markdown>
             </div>

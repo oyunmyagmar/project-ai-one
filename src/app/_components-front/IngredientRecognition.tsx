@@ -96,7 +96,7 @@ export const IngredientRecognition = () => {
           {ingredient ? (
             <div className="text-sm leading-6 text-foreground border border-black/55 rounded-sm px-3 py-2">
               <p className="font-semibold">
-                Here's quick summary of the ingredients:
+                Here is quick summary of the ingredients:
               </p>
               <Markdown>{ingredient}</Markdown>
             </div>
